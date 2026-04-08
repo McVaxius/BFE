@@ -1,0 +1,24 @@
+[
+  {
+    "$schema": "https://raw.githubusercontent.com/goatcorp/Dalamud/master/Dalamud/Configuration/PluginManifest/pluginmanifest.schema.json",
+    "Author": "McVaxius",
+    "Name": "BFE",
+    "Punchline": "Hydatos bunny coordination and preset party callouts.",
+    "Description": "A new BFE shell focused on duty communication first: configured Hydatos/bunny callout presets, quick send buttons, standard Dhog window controls, and DTR visibility.",
+    "InternalName": "BFE",
+    "AssemblyVersion": "0.0.0.1",
+    "TestingAssemblyVersion": "0.0.0.1",
+    "RepoUrl": "https://github.com/McVaxius/BFE",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": 14,
+    "Tags": [
+      "eureka",
+      "hydatos",
+      "callouts",
+      "utility"
+    ],
+    "CategoryTags": [
+      "utility"
+    ]
+  }
+]

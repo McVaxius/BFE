@@ -1,0 +1,16 @@
+## Ignore build outputs
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+
+## Editors
+.vs/
+.vscode/
+.idea/
+
+## Generated plugin binaries
+*.dll
+*.pdb
