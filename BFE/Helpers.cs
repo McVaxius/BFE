@@ -68,6 +68,11 @@ public static unsafe class Helpers
     public static unsafe void ExecuteActionGeneral(uint actionID) => ActionManager.Instance()->UseAction(ActionType.GeneralAction, actionID);
     public static unsafe void ExecuteAction(uint actionID) => ActionManager.Instance()->UseAction(ActionType.Action, actionID);
     public static unsafe void ExecuteKeyAction(uint actionID) => ActionManager.Instance()->UseAction(ActionType.Item, actionID);
+    public static unsafe bool UseInventoryContextItem(uint itemId)
+    {
+        var inventoryContext = AgentInventoryContext.Instance();
+        return inventoryContext != null && inventoryContext->UseItem(itemId) == 0;
+    }
 
     // Returns if the actions if off cooldown of their respective type
     public static unsafe bool IsOffCooldown(uint actionID) => ActionManager.Instance()->IsActionOffCooldown(ActionType.Action, actionID);
