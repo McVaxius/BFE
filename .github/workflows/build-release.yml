@@ -9,7 +9,7 @@ on:
 
 env:
   PLUGIN_NAME: BFE
-  SOLUTION_FILE: BFE.slnx
+  PROJECT_FILE: BFE\BFE.csproj
   INTERNAL_NAME: BFE
   RELEASE_DIR: BFE\bin\x64\Release\BFE
 
@@ -34,8 +34,8 @@ jobs:
 
       - name: Build
         run: |
-          dotnet restore -r win "${{ env.SOLUTION_FILE }}"
-          dotnet build "${{ env.SOLUTION_FILE }}" --configuration Release --no-restore
+          dotnet restore -r win "${{ env.PROJECT_FILE }}" -p:Platform=x64
+          dotnet build "${{ env.PROJECT_FILE }}" --configuration Release --no-restore -p:Platform=x64
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
 
