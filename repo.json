@@ -1,7 +1,7 @@
 [
   {
     "$schema": "https://raw.githubusercontent.com/goatcorp/Dalamud/master/Dalamud/Configuration/PluginManifest/pluginmanifest.schema.json",
-    "Author": "Dhog",
+	"Author": "DhogGPT",
     "Name": "BFE",
     "Punchline": "Hydatos bunny coordination and preset party callouts.",
     "Description": "A new BFE shell focused on duty communication first: configured Hydatos/bunny callout presets, quick send buttons, standard Dhog window controls, and DTR visibility.",
