@@ -6,7 +6,7 @@
     "Punchline": "Hydatos bunny coordination and preset party callouts.",
     "Description": "A new BFE shell focused on duty communication first: configured Hydatos/bunny callout presets, quick send buttons, standard Dhog window controls, and DTR visibility.",
     "InternalName": "BFE",
-    "AssemblyVersion": "0.1.0.12",
+    "AssemblyVersion": "0.1.0.13",
     "TestingAssemblyVersion": "0.0.0.1",
     "RepoUrl": "https://github.com/McVaxius/BFE",
     "ApplicableVersion": "any",

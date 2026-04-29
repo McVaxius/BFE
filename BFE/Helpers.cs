@@ -88,9 +88,50 @@ public static unsafe class Helpers
 
 #region ABANDONDUTY
     // Leaves the current duty the player is in
-    private static readonly AbandonDuty ExitDuty = Marshal.GetDelegateForFunctionPointer<AbandonDuty>(Svc.SigScanner.ScanText("E8 ?? ?? ?? ?? 48 8B 43 28 41 B2 01"));
+    private const string QuestionableAbandonDutySignature = "E8 ?? ?? ?? ?? 41 B2 01 EB 39";
+    private const string BunniesLegacyAbandonDutySignature = "E8 ?? ?? ?? ?? 48 8B 43 28 41 B2 01";
+    private static AbandonDuty? exitDuty;
+
     private delegate void AbandonDuty(bool a1);
-    public static void LeaveDuty() => ExitDuty(false);
+
+    public static void LeaveDuty()
+    {
+        var abandonDuty = ResolveAbandonDuty();
+        if (abandonDuty == null)
+        {
+            PluginLog.Error("Unable to leave duty: abandon-duty signature did not resolve.");
+            return;
+        }
+
+        abandonDuty(false);
+    }
+
+    private static AbandonDuty? ResolveAbandonDuty()
+    {
+        if (exitDuty != null)
+            return exitDuty;
+
+        foreach (var (name, signature) in new[]
+                 {
+                     ("Questionable", QuestionableAbandonDutySignature),
+                     ("BunniesLegacy", BunniesLegacyAbandonDutySignature),
+                 })
+        {
+            try
+            {
+                var address = Svc.SigScanner.ScanText(signature);
+                exitDuty = Marshal.GetDelegateForFunctionPointer<AbandonDuty>(address);
+                PluginLog.Information($"Resolved abandon-duty signature from {name} at 0x{address:X}");
+                return exitDuty;
+            }
+            catch (Exception ex)
+            {
+                PluginLog.Warning($"Failed to resolve abandon-duty signature from {name}: {ex.Message}");
+            }
+        }
+
+        return null;
+    }
 #endregion
 
 #region STATUS_CONDITIONS
