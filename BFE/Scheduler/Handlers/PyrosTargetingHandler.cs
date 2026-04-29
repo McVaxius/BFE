@@ -26,7 +26,7 @@ namespace BFE.Scheduler.Handlers
             if (TryGetClosestPyrosTarget(out gameObject))
                 Svc.Targets.SetTarget(gameObject);
 
-            if (Svc.ClientState.LocalPlayer!.IsDead)
+            if (Svc.Objects.LocalPlayer!.IsDead)
                 return true;
 
             if (!IsInFate())

@@ -141,7 +141,7 @@ namespace BFE.Scheduler
                                 if (HasBunnyStatus())
                                 {
                                     ToggleRotationAIOff();
-                                    if (!IsPlayerAtBossLocation(Svc.ClientState.LocalPlayer!.Position))
+                                    if (!IsPlayerAtBossLocation(Svc.Objects.LocalPlayer!.Position))
                                     {
                                         TaskPluginLog.Enqueue("Going to Boss Location");
                                         TaskMoveTo.Enqueue(new Vector3(161.120f, 710.682f, 259.266f), "Boss");

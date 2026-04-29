@@ -45,7 +45,7 @@ public static unsafe class Helpers
     // Instance of the player
     public static GameObject* LPlayer() => GameObjectManager.Instance()->Objects.IndexSorted[0].Value;
 
-    public static uint GetClassJobID() => Svc.ClientState.LocalPlayer!.ClassJob.RowId;
+    public static uint GetClassJobID() => Svc.Objects.LocalPlayer!.ClassJob.RowId;
 
     // Config for the timeout limit of task enqueueing
     public static TaskManagerConfiguration DConfig => new(timeLimitMS: 10 * 60 * 1000, abortOnTimeout: false);
@@ -53,10 +53,10 @@ public static unsafe class Helpers
     internal static Random random = new Random();
 
 #region ZONES_WORLD
-    public static uint GetCurrentWorld() => Svc.ClientState.LocalPlayer?.CurrentWorld.RowId ?? 0;
+    public static uint GetCurrentWorld() => Svc.Objects.LocalPlayer?.CurrentWorld.RowId ?? 0;
 
     // Returns the current player's home world
-    public static uint GetHomeWorld() => Svc.ClientState.LocalPlayer?.HomeWorld.RowId ?? 0;
+    public static uint GetHomeWorld() => Svc.Objects.LocalPlayer?.HomeWorld.RowId ?? 0;
 
     public static uint CurrentZoneID() => Svc.ClientState.TerritoryType;
 
@@ -154,7 +154,7 @@ public static unsafe class Helpers
     }
 
     // Returns if the player has a given status ID
-    public static bool HasStatus(uint status) => Svc.ClientState.LocalPlayer!.BattleChara()->GetStatusManager()->HasStatus(status);
+    public static bool HasStatus(uint status) => Svc.Objects.LocalPlayer!.BattleChara()->GetStatusManager()->HasStatus(status);
 
     public static bool HasBunnyStatus() => HasStatus(BunnyStatusID);
 
@@ -446,7 +446,7 @@ public static unsafe class Helpers
         if (!PluginInstalled("AutoRetainer")) return false;
         if (!C.enableRetainers) return false;
         return !allCharacters
-            ? P.autoRetainerApi.GetOfflineCharacterData(Svc.ClientState.LocalContentId).RetainerData.AsParallel().Any(x => x.HasVenture && x.VentureEndsAt <= DateTime.Now.ToUnixTimestamp())
+            ? P.autoRetainerApi.GetOfflineCharacterData(P.PlayerState.ContentId).RetainerData.AsParallel().Any(x => x.HasVenture && x.VentureEndsAt <= DateTime.Now.ToUnixTimestamp())
             : GetAllEnabledCharacters().Any(character => P.autoRetainerApi.GetOfflineCharacterData(character).RetainerData.Any(x => x.HasVenture && x.VentureEndsAt <= DateTime.Now.ToUnixTimestamp()));
     }
 
@@ -456,7 +456,7 @@ public static unsafe class Helpers
         if (!PluginInstalled("AutoRetainer")) return false;
         if (!C.enableRetainers) return false;
         return !allCharacters
-            ? P.autoRetainerApi.GetOfflineCharacterData(Svc.ClientState.LocalContentId).OfflineSubmarineData.AsParallel().Any(x => x.ReturnTime <= DateTime.Now.ToUnixTimestamp())
+            ? P.autoRetainerApi.GetOfflineCharacterData(P.PlayerState.ContentId).OfflineSubmarineData.AsParallel().Any(x => x.ReturnTime <= DateTime.Now.ToUnixTimestamp())
             : GetAllEnabledCharacters().Any(c => P.autoRetainerApi.GetOfflineCharacterData(c).OfflineSubmarineData.Any(x => x.ReturnTime <= DateTime.Now.ToUnixTimestamp()));
     }
 
@@ -510,19 +510,19 @@ public static unsafe class Helpers
     // Return the player's X position
     public static float GetPlayerRawXPos()
     {
-        return Svc.ClientState.LocalPlayer!.Position.X;
+        return Svc.Objects.LocalPlayer!.Position.X;
     }
 
     // Return the player's Y position
     public static float GetPlayerRawYPos()
     {
-        return Svc.ClientState.LocalPlayer!.Position.Y;
+        return Svc.Objects.LocalPlayer!.Position.Y;
     }
 
     // Return the player's Z position
     public static float GetPlayerRawZPos()
     {
-        return Svc.ClientState.LocalPlayer!.Position.Z;
+        return Svc.Objects.LocalPlayer!.Position.Z;
     }
 
     // Determines whether the player is within range of a set position given
@@ -628,7 +628,7 @@ public static unsafe class Helpers
     // Returns the distance from the player to a game object
     internal static unsafe float GetDistanceToPlayer(IGameObject gameObject) => GetDistanceToPlayer(gameObject.Position);
     // Returns the distance from the player to a position given X, Y, Z
-    public static float GetDistanceToPoint(float x, float y, float z) => Vector3.Distance(Svc.ClientState.LocalPlayer?.Position ?? Vector3.Zero, new Vector3(x, y, z));
+    public static float GetDistanceToPoint(float x, float y, float z) => Vector3.Distance(Svc.Objects.LocalPlayer?.Position ?? Vector3.Zero, new Vector3(x, y, z));
     // Checks the distance from the player to the edge of the hitbox of an object
     public static unsafe float DistanceToHitboxEdge(float hitboxRadius, IGameObject gameObject) => GetDistanceToPlayer(gameObject) - hitboxRadius;
     // Checks if the player is currently in melee range

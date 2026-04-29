@@ -25,6 +25,7 @@ public sealed class Plugin : IDalamudPlugin
     internal IChatGui ChatGui { get; private init; } = null!;
 
     internal IToastGui ToastGui { get; private init; } = null!;
+    internal IPlayerState PlayerState { get; private init; } = null!;
 
     public static Config C => P.config;
 
@@ -52,11 +53,12 @@ public sealed class Plugin : IDalamudPlugin
     internal TimeSpan totalRunTime;
 
     #pragma warning disable CS8618
-    public Plugin(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IToastGui toastGui)
+    public Plugin(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IToastGui toastGui, IPlayerState playerState)
     {
         P = this;
         ChatGui = chatGui;
         ToastGui = toastGui;
+        PlayerState = playerState;
         filter = new Filter();
         ECommonsMain.Init(pluginInterface, this, ECommons.Module.DalamudReflector, ECommons.Module.ObjectFunctions);
         new ECommons.Schedulers.TickScheduler(Load);
@@ -126,7 +128,7 @@ public sealed class Plugin : IDalamudPlugin
 
     private void Tick(IFramework _)
     {
-        if (SchedulerMain.DoWeTick && Svc.ClientState.LocalPlayer != null)
+        if (SchedulerMain.DoWeTick && Svc.Objects.LocalPlayer != null)
         {
             SchedulerMain.Tick();
         }
