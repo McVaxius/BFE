@@ -1,7 +1,6 @@
 using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using ECommons.Logging;
-using ECommons.Reflection;
 using System.ComponentModel;
 
 namespace BFE.IPC;
@@ -12,8 +11,7 @@ internal class WrathIPC
     private static EzIPCDisposalToken[] _disposalTokens =
         EzIPC.Init(typeof(WrathIPC), "WrathCombo", SafeWrapper.IPCException);
     public const string Name = "WrathCombo";
-    internal static bool IsEnabled =>
-        DalamudReflector.TryGetDalamudPlugin("WrathCombo", out _, false, true);
+    internal static bool IsEnabled => PluginInstalled(Name);
     public bool Installed => PluginInstalled(Name);
     internal static Guid? BunniesLease;
 

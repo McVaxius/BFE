@@ -251,22 +251,27 @@ public static unsafe class Helpers
     // Toggles all automation commands in-game to be on
     public static void ToggleRotationAI()
     {
-        if (PluginInstalled("RotationSolver"))
+        if (P.pluginDependencies.IsLoaded(PluginDependencyService.RotationSolverInternalName))
         {
             RunCommand("rsr manual");
             RunCommand("rotation settings HostileType 0");
         }
-        RunCommand("bmrai on");
-        RunCommand("bmrai followcombat on");
-        RunCommand("bmrai followoutofcombat on");
-        RunCommand($"bmrai maxdistancetarget {SetAIRange()}");
+        if (P.pluginDependencies.IsBossModFamilyLoaded)
+        {
+            RunCommand("bmrai on");
+            RunCommand("bmrai followcombat on");
+            RunCommand("bmrai followoutofcombat on");
+            RunCommand($"bmrai maxdistancetarget {SetAIRange()}");
+        }
     }
 
     // Toggles all automation commands in-game to be off
     public static void ToggleRotationAIOff()
     {
-        RunCommand("bmrai off");
-        RunCommand("rsr off");
+        if (P.pluginDependencies.IsBossModFamilyLoaded)
+            RunCommand("bmrai off");
+        if (P.pluginDependencies.IsLoaded(PluginDependencyService.RotationSolverInternalName))
+            RunCommand("rsr off");
     }
 
     // Sets the distance for the AI to walk to a target
@@ -320,14 +325,14 @@ public static unsafe class Helpers
             {
                 EnableWrathAuto();
 
-                if (PluginInstalled("BossMod")) // If you have Veyns BossMod and Wrath Installed at the same time
+                if (P.pluginDependencies.IsLoaded(PluginDependencyService.BossModInternalName)) // If you have Veyns BossMod and Wrath Installed at the same time
                 {
                     P.bossmod.AddPreset("ROR Passive", Resources.BMRotations.rootPassive);
                     P.bossmod.SetPreset("ROR Passive");
                     P.bossmod.SetRange(range);
                     RunCommand("vbm ai on");
                 }
-                if (PluginInstalled(AltBossMod)) // If you have... alternative bossmod installed & also Wrath
+                if (P.pluginDependencies.IsLoaded(PluginDependencyService.BossModRebornInternalName)) // If you have... alternative bossmod installed & also Wrath
                 {
                     RunCommand($"vbmai maxdistancetarget {altrange}");
                     RunCommand("vbmai on");
@@ -335,7 +340,7 @@ public static unsafe class Helpers
                     RunCommand("vbmai followcombat on");
                 }
             }
-            else if (P.bossmod.Installed) // If you have ONLY Veyn's BossMod
+            else if (P.pluginDependencies.IsLoaded(PluginDependencyService.BossModInternalName)) // If you have ONLY Veyn's BossMod
             {
                 RunCommand("vbm ai on");
                 P.bossmod.AddPreset("RoR Boss", Resources.BMRotations.rootBoss);
@@ -348,18 +353,28 @@ public static unsafe class Helpers
             if (PluginInstalled("WrathCombo"))
             {
                 //RunCommand("wrath auto off");
-                P.bossmod.DisablePresets();
                 ReleaseWrathControl();
-                RunCommand("vbm ai off");
-                if (PluginInstalled(AltBossMod))
+                if (P.pluginDependencies.IsLoaded(PluginDependencyService.BossModInternalName))
+                {
+                    P.bossmod.DisablePresets();
+                    RunCommand("vbm ai off");
+                }
+                if (P.pluginDependencies.IsLoaded(PluginDependencyService.BossModRebornInternalName))
                 {
                     RunCommand("vbmai off");
                 }
             }
             else
             {
-                RunCommand("vbm ai off");
-                P.bossmod.DisablePresets();
+                if (P.pluginDependencies.IsLoaded(PluginDependencyService.BossModInternalName))
+                {
+                    RunCommand("vbm ai off");
+                    P.bossmod.DisablePresets();
+                }
+                if (P.pluginDependencies.IsLoaded(PluginDependencyService.BossModRebornInternalName))
+                {
+                    RunCommand("vbmai off");
+                }
             }
         }
     }
@@ -789,7 +804,14 @@ public static unsafe class Helpers
     // Returns if a dalamud plugin is currently installed
     public static bool PluginInstalled(string name)
     {
-        return DalamudReflector.TryGetDalamudPlugin(name, out _, false, true);
+        try
+        {
+            return P.pluginDependencies.IsLoaded(name);
+        }
+        catch
+        {
+            return DalamudReflector.TryGetDalamudPlugin(name, out _, false, true);
+        }
     }
 
     // Returns if a dalamud addon is currently active
@@ -802,14 +824,10 @@ public static unsafe class Helpers
     // A notification given of the required plugins to run Bunnies
     public static void NotifyPlugins()
     {
-        var x = "";
-        if (!PluginInstalled("vnavmesh"))
-            x += "vnavmesh\n";
-        if (!PluginInstalled("RotationSolver"))
-            x += "Rotation Solver Reborn\n";
-        if (!PluginInstalled("BossModReborn"))
-            x += "BossModReborn\n";
-        Notify.Error($"Missing Required Plugins to run Bunnies \nRequired Plugins are \n{x}");
+        P.pluginDependencies.Refresh(true);
+        var unavailablePlugins = P.pluginDependencies.UnloadedRequiredStatuses
+            .Select(status => $"{status.DisplayName}: {status.StateText}");
+        Notify.Error($"Required plugins unavailable for Bunnies:\n{string.Join("\n", unavailablePlugins)}");
     }
 
     // Starting task when loading the plugin

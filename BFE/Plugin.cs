@@ -47,6 +47,7 @@ public sealed class Plugin : IDalamudPlugin
     internal BossModIPC bossmod;
     internal WrathIPC wrath;
     internal BunniesIPC bunniesIPC;
+    internal PluginDependencyService pluginDependencies;
 
     // Timers
     internal Stopwatch stopwatch;
@@ -70,6 +71,8 @@ public sealed class Plugin : IDalamudPlugin
         config = EzConfig.Init<Config>();
 
         // IPC's
+        pluginDependencies = new();
+        pluginDependencies.Refresh(true);
         taskManager = new();
         autoRetainer = new();
         autoRetainerApi = new();
@@ -128,6 +131,8 @@ public sealed class Plugin : IDalamudPlugin
 
     private void Tick(IFramework _)
     {
+        pluginDependencies.RefreshIfDue();
+
         if (SchedulerMain.DoWeTick && Svc.Objects.LocalPlayer != null)
         {
             SchedulerMain.Tick();
@@ -180,7 +185,8 @@ public sealed class Plugin : IDalamudPlugin
 
         else if (args.EqualsIgnoreCaseAny("pyros"))
         {
-            if (PluginInstalled("vnavmesh") && PluginInstalled("RotationSolver") && PluginInstalled("BossModReborn"))
+            pluginDependencies.Refresh(true);
+            if (pluginDependencies.RequiredDependenciesLoaded)
             {
                 C.zoneSelected = 1;
                 SchedulerMain.EnablePlugin();

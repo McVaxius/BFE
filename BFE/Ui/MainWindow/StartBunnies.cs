@@ -59,33 +59,11 @@ namespace BFE.Ui.MainWindow
             else if (C.zoneSelected == 2)
                 ButtonName = "Hydatos";
 
-            if (!PluginInstalled("vnavmesh") || !PluginInstalled("RotationSolver") || !PluginInstalled("BossModReborn"))
+            DrawDependencyStatus();
+
+            if (!P.pluginDependencies.RequiredDependenciesLoaded)
             {
-                ImGui.Text("The following plugins are required to start Bunnies automation.");
-                PluginGreenRedText(PluginInstalled("vnavmesh"), "vnavmesh");
-                ImGui.SameLine();
-                if (ImGui.Button("Get Repo Url ##Vnav"))
-                {
-                    ImGui.SetClipboardText(IPC.NavmeshIPC.Repo);
-                    DuoLog.Information("Repo URL Copied");
-                    Notify.Info("Repo URL Copied");
-                }
-                PluginGreenRedText(PluginInstalled("RotationSolver"), "Rotation Solver Reborn");
-                ImGui.SameLine();
-                if (ImGui.Button("Get Repo Url ##RSR"))
-                {
-                    ImGui.SetClipboardText(RSR);
-                    DuoLog.Information("Repo URL Copied");
-                    Notify.Info("Repo URL Copied");
-                }
-                PluginGreenRedText(PluginInstalled("BossModReborn"), "BossMod Reborn");
-                ImGui.SameLine();
-                if (ImGui.Button("Get Repo Url ##BMR"))
-                {
-                    ImGui.SetClipboardText(BMR);
-                    DuoLog.Information("Repo URL Copied");
-                    Notify.Info("Repo URL Copied");
-                }
+                ImGui.Text("Load all required plugins to start Bunnies automation.");
             }
             else
             {
@@ -103,6 +81,38 @@ namespace BFE.Ui.MainWindow
                     }
                 }
             }
+        }
+
+        private static void DrawDependencyStatus()
+        {
+            ImGui.Text("Dependencies");
+            ImGui.SameLine();
+            if (ImGui.Button("Refresh##DependencyStatus"))
+            {
+                P.pluginDependencies.Refresh(true);
+            }
+
+            foreach (var dependency in P.pluginDependencies.RequiredStatuses)
+            {
+                ImGui.TextColored(GetDependencyColor(dependency.State), $"- {dependency.DisplayName}: {dependency.StateText}");
+                ImGui.SameLine();
+                if (ImGui.Button($"Get Repo Url ##{dependency.InternalName}"))
+                {
+                    ImGui.SetClipboardText(dependency.RepoUrl);
+                    DuoLog.Information("Repo URL Copied");
+                    Notify.Info("Repo URL Copied");
+                }
+            }
+        }
+
+        private static Vector4 GetDependencyColor(PluginDependencyState state)
+        {
+            return state switch
+            {
+                PluginDependencyState.Loaded => ImGuiColors.HealerGreen,
+                PluginDependencyState.InstalledNotLoaded => ImGuiColors.DalamudYellow,
+                _ => ImGuiColors.DalamudRed,
+            };
         }
     }
 }
