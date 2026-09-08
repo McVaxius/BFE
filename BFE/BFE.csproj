@@ -7,9 +7,9 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
-    <Version>0.1.0.16</Version>
-    <FileVersion>0.1.0.16</FileVersion>
-    <AssemblyVersion>0.1.0.16</AssemblyVersion>
+    <Version>0.1.0.17</Version>
+    <FileVersion>0.1.0.17</FileVersion>
+    <AssemblyVersion>0.1.0.17</AssemblyVersion>
     <NoWarn>CS0219;CS0414;CS0618;CS0649;CS8632</NoWarn>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <IsPackable>false</IsPackable>

@@ -21,7 +21,7 @@ namespace BFE
 
         private bool AnyMatches(string text)
         {
-            return C.Patterns.Any(regex => regex.IsMatch(text));
+            return C?.Patterns?.Any(regex => regex.IsMatch(text)) == true;
         }
 
         private void OnToast(ref SeString message, ref ToastOptions options, ref bool isHandled)
