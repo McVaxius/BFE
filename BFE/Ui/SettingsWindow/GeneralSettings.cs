@@ -37,7 +37,7 @@ namespace BFE.Ui.SettingsWindow
             {
                 ImGui.Indent(20f);
                 ImGui.PushItemWidth(150f);
-                if (ImGuiEx.SliderFloat("Repair Value##RepairSlider", ref RepairSlider, 0f, 100f, "%.1f"))
+                if (UiGui.SliderFloat("Repair Value##RepairSlider", ref RepairSlider, 0f, 100f, "%.1f"))
                 {
                     if (RepairSlider >= 100)
                         C.repairSlider = 99.9f;
@@ -45,7 +45,8 @@ namespace BFE.Ui.SettingsWindow
                         C.repairSlider = RepairSlider;
                     C.Save();
                 }
-                ImGuiComponents.HelpMarker("Threshold to repair gear");
+                ImGui.PopItemWidth();
+                ImGuiComponents.HelpMarker(UiText.T("Threshold to repair gear"));
                 if (Helpers.CheckboxWithTooltip("Self Repair", ref SelfRepair, "If crafters are leveled, uses dark matter for self repair."))
                 {
                     C.selfRepair = SelfRepair;
@@ -68,7 +69,7 @@ namespace BFE.Ui.SettingsWindow
             if (TeleportToHouse)
             {
                 ImGui.Indent(20f);
-                if (ImGui.RadioButton("Teleport To Personal", TeleportToPersonal))
+                if (UiGui.RadioButton("Teleport To Personal", TeleportToPersonal))
                 {
                     TeleportToPersonal = true;
                     TeleportToFC = false;
@@ -77,7 +78,7 @@ namespace BFE.Ui.SettingsWindow
                     C.Save();
                 }
 
-                if (ImGui.RadioButton("Teleport to Free Company", TeleportToFC))
+                if (UiGui.RadioButton("Teleport to Free Company", TeleportToFC))
                 {
                     TeleportToFC = true;
                     TeleportToPersonal = false;
@@ -95,18 +96,17 @@ namespace BFE.Ui.SettingsWindow
                 C.Save();
             }
 
-            if (ImGui.Combo("##timer settings", ref SelectedOption, Options, Options.Length))
+            if (UiGui.Combo("##timer settings", ref SelectedOption, Options, Options.Length))
             {
                 C.runInfinite = SelectedOption == 0;
                 C.Save();
             }
 
-            ImGuiComponents.HelpMarker("Set to Run Infinitely or set a timer up to 24 hours");
+            ImGuiComponents.HelpMarker(UiText.T("Set to Run Infinitely or set a timer up to 24 hours"));
             if (!C.runInfinite)
             {
                 ImGui.Indent(20f);
-                ImGui.Text("Hours");
-                if (ImGui.InputInt("Hours ##hours", ref Hours))
+                if (UiGui.InputInt("Hours ##hours", ref Hours))
                 {
                     if (Hours < 0)
                         Hours = 0;
@@ -118,8 +118,8 @@ namespace BFE.Ui.SettingsWindow
                     C.hours = Hours;
                     C.Save();
                 }
-                ImGui.Text("Minutes");
-                if (ImGui.InputInt("##minutes", ref Minutes))
+                UiGui.Text("Minutes");
+                if (UiGui.InputInt("##minutes", ref Minutes))
                 {
                     if (Hours >= 24)
                         Minutes = 0;

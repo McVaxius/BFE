@@ -1,3 +1,5 @@
+using AethertekUI;
+using BFE.Ui;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Colors;
@@ -793,10 +795,10 @@ public static unsafe class Helpers
     // GUI, creates a checkbox with a marker tooltip
     public static bool CheckboxWithTooltip(string label, ref bool value, string tooltip)
     {
-        bool checkbox = ImGui.Checkbox(label, ref value);
+        bool checkbox = UiGui.Checkbox(label, ref value);
         if (tooltip != null)
         {
-            ImGuiComponents.HelpMarker(tooltip);
+            ImGuiComponents.HelpMarker(UiText.T(tooltip));
         }
         return checkbox;
     }
@@ -826,8 +828,8 @@ public static unsafe class Helpers
     {
         P.pluginDependencies.Refresh(true);
         var unavailablePlugins = P.pluginDependencies.UnloadedRequiredStatuses
-            .Select(status => $"{status.DisplayName}: {status.StateText}");
-        Notify.Error($"Required plugins unavailable for Bunnies:\n{string.Join("\n", unavailablePlugins)}");
+            .Select(status => $"{status.DisplayName}: {P.appearance.Label(status.StateText)}");
+        Notify.Error(P.appearance.Format("Required plugins unavailable for Bunnies:\n{0}", string.Join("\n", unavailablePlugins)));
     }
 
     // Starting task when loading the plugin
@@ -856,15 +858,15 @@ public static unsafe class Helpers
         if (ImGui.IsItemHovered())
         {
             ImGui.BeginTooltip();
-            ImGui.Text("The following plugins are required to be installed and enabled: ");
+            UiGui.TextUnformatted("The following plugins are required to be installed and enabled: ");
             PluginGreenRedText(PluginInstalled, Text);
-            ImGui.Text("Click to Copy Repo URL");
+            UiGui.TextUnformatted("Click to Copy Repo URL");
             ImGui.EndTooltip();
             if (ImGui.IsItemClicked())
             {
                 ImGui.SetClipboardText(Url);
                 DuoLog.Information("Repo URL Copied");
-                Notify.Info("Repo URL Copied");
+                Notify.Info(P.appearance.Label("Repo URL Copied"));
             }
         }
 
@@ -875,20 +877,22 @@ public static unsafe class Helpers
     public static void PluginGreenRedText(bool PluginInstalled, string text)
     {
         if (PluginInstalled)
-            ImGui.TextColored(ImGuiColors.HealerGreen, $"- {text}");
+            MaterialText.TextColored(ImGuiColors.HealerGreen, $"- {text}");
         else
-            ImGui.TextColored(ImGuiColors.DalamudRed, $"- {text}");
+            MaterialText.TextColored(ImGuiColors.DalamudRed, $"- {text}");
     }
 
     // GUI, created selectable dropdown menus centered within the window
     public static void DrawMainSelectables(string label, ref bool show, Vector2 vector, float textstart)
     {
+        if (MaterialText.RequiresShaping(UiText.T(label)))
+            vector.Y = Math.Max(vector.Y, MaterialText.Measure(UiText.T(label)).Y);
         ImGui.SetCursorPosX(0);
         if (ImGui.Selectable("##" + label, show, ImGuiSelectableFlags.None, vector))
             show = !show;
         ImGui.SameLine();
-        ImGui.SetCursorPosX(textstart);
-        ImGui.Text(label);
+        ImGui.SetCursorPosX(Math.Max(0, (vector.X - MaterialText.Measure(UiText.T(label)).X) * .5f));
+        UiGui.TextUnformatted(label);
         ImGui.Spacing();
     }
     #endregion UI

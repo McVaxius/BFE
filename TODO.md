@@ -34,7 +34,7 @@ Complete every item independently for **each** zone. Do not assume that Pyros na
 
 - [ ] Prevent unsupported default and persisted selections from starting automation. `Config.zoneSelected` currently defaults to Pagos (`0`) even though Pagos has no runtime, and the main Start button can still enable the scheduler for that selection.
 - [ ] Correct the Hydatos command spelling from `hydatps` to `hydatos`; keep it non-starting until Hydatos passes the completion gate.
-- [ ] Correct zone stats labels and reward tracking. The Pagos panel currently labels `bulbMinion` as "Eldthurs Mount" and `hakutakuEye` as "Pyros Hairstyles," the Hydatos panel heading says "Pagos," and reward-item counting currently covers only the Pyros item IDs.
+- [ ] Complete zone stats labels and reward tracking. The Hydatos panel heading is corrected to "Hydatos." The Pagos panel still labels `bulbMinion` as "Eldthurs Mount" and `hakutakuEye` as "Pyros Hairstyles," and reward-item counting currently covers only the Pyros item IDs.
 - [ ] Align `README.MD` and `BFE/BFE.json` with actual support. Until another zone passes the completion gate, describe Pyros as the only supported zone and remove the expired promise that all three zones will be added by a past date.
 
 ## Zone completion gate

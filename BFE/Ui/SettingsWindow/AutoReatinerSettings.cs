@@ -10,6 +10,7 @@ using System.Numerics;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using AethertekUI;
 
 namespace BFE.Ui.SettingsWindow
 {
@@ -24,22 +25,23 @@ namespace BFE.Ui.SettingsWindow
             if (!PluginInstalled("AutoRetainer"))
             {
                 var backgroundColor = Vector4.Zero;
-                ImGui.TextColored(ImGuiColors.DalamudRed, "AutoRetainer is currently not installed or enabled. Click to copy Repo.");
+                ImGui.PushTextWrapPos(0);
+                UiGui.TextColored(ImGuiColors.DalamudRed, "AutoRetainer is currently not installed or enabled. Click to copy Repo.");
+                ImGui.PopTextWrapPos();
                 C.enableRetainers = false;
                 C.enableSubs = false;
                 C.enableMulti = false;
                 if (ImGui.IsItemHovered())
                 {
-                    backgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 0.15f);
+                    backgroundColor = MaterialTheme.Current.Colors.OnSurfaceVariant;
+                    backgroundColor.W = 0.15f;
                     if (ImGui.IsItemClicked())
                     {
                         ImGui.SetClipboardText(IPC.AutoRetainerIPC.Repo);
                         DuoLog.Information("Repo URL Copied");
-                        Notify.Info("Repo URL Copied");
+                        Notify.Info(P.appearance.Label("Repo URL Copied"));
                     }
-                    var textSize = ImGui.CalcTextSize("AutoRetainer is currently not installed or enabled. Click to copy Repo.");
-                    var cursorPos = ImGui.GetCursorScreenPos() - new Vector2(0, textSize.Y + 2);
-                    ImGui.GetWindowDrawList().AddRectFilled(cursorPos, cursorPos + (textSize) - new Vector2(0,2), backgroundColor.ToUint());
+                    ImGui.GetWindowDrawList().AddRectFilled(ImGui.GetItemRectMin(), ImGui.GetItemRectMax(), backgroundColor.ToUint());
                 }
                 C.Save();
             }

@@ -1,3 +1,4 @@
+using AethertekUI;
 using Dalamud.Bindings.ImGui;
 using System.Numerics;
 using Dalamud.Interface;
@@ -27,13 +28,14 @@ internal class DebugWindow : PositionedWindow
             MinimumSize = new(150, 150),
             MaximumSize = new(9999, 9999)
         };
+        Flags |= ImGuiWindowFlags.HorizontalScrollbar;
 
         TitleBarButtons.Add(new()
         {
             Click = (m) => { if (m == ImGuiMouseButton.Left) P.settingsWindow.IsOpen = !P.settingsWindow.IsOpen; },
             Icon = FontAwesomeIcon.Cog,
             IconOffset = new(2, 2),
-            ShowTooltip = () => ImGui.SetTooltip("Open settings window")
+            ShowTooltip = () => MaterialText.SetTooltip(UiText.T("Open settings window"))
         });
 
         P.windowSystem.AddWindow(this);
@@ -42,8 +44,10 @@ internal class DebugWindow : PositionedWindow
 
     public override void Draw()
     {
+        WindowMotion.DrawChrome();
+        UiGui.Title($"{PluginInfo.DisplayName} Debug", UiText.T("BFE Debug"));
         bool debug = C.enableDebug;
-        if (ImGui.Checkbox("Debug Stats", ref debug))
+        if (UiGui.Checkbox("Debug Stats", ref debug))
         {
             C.UpdatePyrosStats(PyrosStats => { PyrosStats.gilEarned = C.stats.gilEarned; });
             C.UpdatePyrosStats(PyrosStats => { PyrosStats.goldCoffer = C.stats.goldCoffer; });

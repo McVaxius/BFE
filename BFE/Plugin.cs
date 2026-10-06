@@ -13,6 +13,7 @@ using AutoRetainerAPI;
 using System.Diagnostics;
 using BFE.IPC.Lifestream;
 using BFE.Scheduler;
+using BFE.Ui;
 
 namespace BFE;
 
@@ -21,11 +22,13 @@ public sealed class Plugin : IDalamudPlugin
     public string Name => PluginInfo.DisplayName;
     internal static Plugin P = null!;
     private Config config;
+    internal BfeAppearance appearance;
 
     internal IChatGui ChatGui { get; private init; } = null!;
 
     internal IToastGui ToastGui { get; private init; } = null!;
     internal IPlayerState PlayerState { get; private init; } = null!;
+    internal ITextureProvider TextureProvider { get; private init; } = null!;
 
     public static Config C => P.config;
 
@@ -54,12 +57,13 @@ public sealed class Plugin : IDalamudPlugin
     internal TimeSpan totalRunTime;
 
     #pragma warning disable CS8618
-    public Plugin(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IToastGui toastGui, IPlayerState playerState)
+    public Plugin(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IToastGui toastGui, IPlayerState playerState, ITextureProvider textureProvider)
     {
         P = this;
         ChatGui = chatGui;
         ToastGui = toastGui;
         PlayerState = playerState;
+        TextureProvider = textureProvider;
         filter = new Filter();
         ECommonsMain.Init(pluginInterface, this, ECommons.Module.DalamudReflector, ECommons.Module.ObjectFunctions);
         new ECommons.Schedulers.TickScheduler(Load);
@@ -69,6 +73,7 @@ public sealed class Plugin : IDalamudPlugin
     {
         EzConfig.Migrate<Config>();
         config = EzConfig.Init<Config>();
+        appearance = new(TextureProvider);
 
         // IPC's
         pluginDependencies = new();
@@ -92,7 +97,7 @@ public sealed class Plugin : IDalamudPlugin
         // Timers
         stopwatch = new();
 
-        Svc.PluginInterface.UiBuilder.Draw += windowSystem.Draw;
+        Svc.PluginInterface.UiBuilder.Draw += DrawUi;
 
         Svc.PluginInterface.UiBuilder.OpenMainUi += OpenMainUi;
         Svc.PluginInterface.UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -118,6 +123,8 @@ public sealed class Plugin : IDalamudPlugin
     private void OpenMainUi()
         => mainWindow.IsOpen = true;
 
+    private void DrawUi() => appearance.Draw(windowSystem);
+
     private void OpenConfigUi()
         => settingsWindow.IsOpen = !settingsWindow.IsOpen;
 
@@ -142,10 +149,11 @@ public sealed class Plugin : IDalamudPlugin
     public void Dispose()
     {
         Svc.Framework.Update -= Tick;
-        Svc.PluginInterface.UiBuilder.Draw -= windowSystem.Draw;
+        Svc.PluginInterface.UiBuilder.Draw -= DrawUi;
         Svc.PluginInterface.UiBuilder.OpenMainUi -= OpenMainUi;
         Svc.PluginInterface.UiBuilder.OpenConfigUi -= OpenConfigUi;
         windowSystem.RemoveAllWindows();
+        appearance?.Dispose();
         filter.Dispose();
         autoRetainerApi?.Dispose();
         ECommonsMain.Dispose();
