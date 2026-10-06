@@ -83,7 +83,7 @@ The subsequent fourteen-language expansion is verified separately in local
 compilation and native UI checks; it has not been repackaged or deployed here.
 
 Local builds require the sibling `aethertekUI` checkout and SDK 10.0.201. Actions
-checks out that private library with this repository's read-only
+pins that private library to published commit 6c193cf06ac67f954c549cafc2033ac0efdd630a with this repository's read-only
 `AETHERTEKUI_DEPLOY_KEY`; existing batch builds use the same SDK and API 15
 distribution. Build checks do not establish game visual acceptance. mcvaxius owns
 installation and the final in-game screenshot review.
