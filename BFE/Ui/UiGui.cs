@@ -67,6 +67,8 @@ internal static class UiGui
     internal static bool Button(string label,string? display=null)
     {
         var translated=display ?? UiText.T(label.Split("##",2)[0]);
+        using var controls = ImGui.GetStyle().FramePadding.Y == 0 || MaterialControls.Context == MaterialControlContext.Dense
+            ? default(MaterialControls.ControlScope) : MaterialControls.Push(MaterialControlContext.Toolbar);
         using var height = MaterialText.PushLineHeight(translated);
         var width=MaterialLayout.FitNextItemWidth(0,MaterialText.Measure(translated).X+2*ImGui.GetStyle().FramePadding.X);
         var foreground=ImGui.GetStyle().Colors[(int)ImGuiCol.Text];
@@ -86,8 +88,10 @@ internal static class UiGui
     internal static bool Button(string label, Vector2 pixels)
     {
         var translated = UiText.T(label.Split("##", 2)[0]);
+        using var controls = ImGui.GetStyle().FramePadding.Y == 0 || MaterialControls.Context == MaterialControlContext.Dense
+            ? default(MaterialControls.ControlScope) : MaterialControls.Push(MaterialControlContext.Toolbar);
         using var height = MaterialText.PushLineHeight(translated);
-        if (MaterialText.RequiresShaping(translated)) pixels.Y = Math.Max(pixels.Y, ImGui.GetFrameHeight());
+        pixels.Y = Math.Max(pixels.Y, ImGui.GetFrameHeight());
         var color = ImGui.GetStyle().Colors[(int)ImGuiCol.Text];
         pixels.X = MaterialLayout.FitNextItemWidth(pixels.X, MaterialText.Measure(translated).X + 2 * ImGui.GetStyle().FramePadding.X);
         ImGui.PushStyleColor(ImGuiCol.Text, Vector4.Zero);
@@ -108,7 +112,9 @@ internal static class UiGui
         var s = MaterialTheme.Metrics.Scale;
         var c = MaterialTheme.Current.Colors;
         var label = UiText.T(original);
-        var size = new Vector2(MaterialLayout.FitNextItemWidth((BfePresentation.Compact ? 272 : 280) * s, MaterialText.Measure(label).X + 72 * s), Math.Max(BfePresentation.FooterHeight * s, MaterialText.Measure(label).Y + 16 * s));
+        using var controls = MaterialControls.Push(MaterialControlContext.Toolbar);
+        using var lineHeight = MaterialText.PushLineHeight(label);
+        var size = new Vector2(MaterialLayout.FitNextItemWidth((BfePresentation.Compact ? 272 : 280) * s, MaterialText.Measure(label).X + 72 * s), Math.Max(ImGui.GetFrameHeight(), (24 + 2 * (BfePresentation.Compact ? 2 : 4)) * s));
         var fill = BfePresentation.ActionFill;
         ImGui.BeginDisabled(disabled);
         try
@@ -162,7 +168,7 @@ internal static class UiGui
     }
     internal static float IconButtonWidth(string label, bool header = false, bool link = false)
         => MaterialText.Measure(UiText.T(label.Split("##", 2)[0])).X + (link ? 32 : 44) * MaterialTheme.Metrics.Scale
-            + 2 * (header || link ? ImGui.GetStyle().FramePadding.X : 20 * MaterialTheme.Metrics.Scale);
+            + 2 * MaterialControlMetrics.Measure(MaterialTheme.Metrics, ImGui.GetTextLineHeight(), MaterialControls.Context == MaterialControlContext.Dense ? MaterialControlContext.Dense : MaterialControlContext.Toolbar).NativePadding.X;
     internal static void SameLineIconIfFits(string label, bool header = false)
     {
         var right = ImGui.GetCursorScreenPos().X + ImGui.GetContentRegionAvail().X;
@@ -172,11 +178,14 @@ internal static class UiGui
     {
         var s = MaterialTheme.Metrics.Scale;
         var label = UiText.T(original.Split("##", 2)[0]);
+        using var controls = MaterialControls.Context == MaterialControlContext.Dense
+            ? default(MaterialControls.ControlScope) : MaterialControls.Push(MaterialControlContext.Toolbar);
         using var height = MaterialText.PushLineHeight(label);
         var iconSize = (header ? 32 : link ? 22 : 30) * s;
-        var padding = header || link ? ImGui.GetStyle().FramePadding.X : 20 * s;
+        var padding = ImGui.GetStyle().FramePadding.X;
         var textOffset = (link ? 32 : 44) * s;
-        var size = new Vector2(MaterialLayout.FitNextItemWidth(0, IconButtonWidth(original, header, link)), Math.Max(ImGui.GetFrameHeight(), (header ? BfePresentation.Compact ? 44 : 52 : link ? 28 : BfePresentation.ControlHeight) * s));
+        var vertical = MaterialControls.Context == MaterialControlContext.Dense ? BfePresentation.Compact ? 1 : 2 : BfePresentation.Compact ? 2 : 4;
+        var size = new Vector2(MaterialLayout.FitNextItemWidth(0, IconButtonWidth(original, header, link)), Math.Max(ImGui.GetFrameHeight(), iconSize + 2 * vertical * s));
         var foreground = link ? MaterialTheme.Current.Colors.Tertiary : ImGui.GetStyle().Colors[(int)ImGuiCol.Text];
         if (header || link) ImGui.PushStyleColor(ImGuiCol.Button, Vector4.Zero);
         ImGui.PushStyleColor(ImGuiCol.Text, Vector4.Zero);
