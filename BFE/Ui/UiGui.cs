@@ -1,6 +1,7 @@
 using System.Numerics;
 using AethertekUI;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Windowing;
 
 namespace BFE.Ui;
 
@@ -338,6 +339,22 @@ internal static class UiGui
         }
         ImGui.PopID(); return changed;
     }
+    internal static void ReserveTitleSpace(Window owner, string visible, float minimumWidth)
+    {
+        var style = ImGui.GetStyle();
+        var fontSize = ImGui.GetFontSize();
+        var collapse = (owner.Flags & (ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.Modal)) == 0
+            && style.WindowMenuButtonPosition != ImGuiDir.None;
+        var count = owner.TitleBarButtons.Count(button => !owner.IsClickthrough || button.AvailableClickthrough);
+        if (owner.AllowPinning || owner.AllowClickthrough || owner.AllowBackgroundBlur) count++;
+        var controls = (count + (owner.ShowCloseButton ? 1 : 0) + (collapse ? 1 : 0)) * (fontSize + style.ItemInnerSpacing.X);
+        var required = (MaterialText.Measure(visible).X + controls + style.FramePadding.X * 2 + style.ItemInnerSpacing.X)
+            / ImGui.GetIO().FontGlobalScale;
+        var bounds = owner.SizeConstraints ?? new WindowSizeConstraints();
+        bounds.MinimumSize = new(Math.Max(minimumWidth, required), bounds.MinimumSize.Y);
+        owner.SizeConstraints = bounds;
+    }
+
     internal static void Title(string original,string translated)
     {
         var s=ImGui.GetStyle(); var size=ImGui.GetFontSize();var height=ImGui.GetFrameHeight();

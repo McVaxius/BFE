@@ -12,6 +12,26 @@ internal class StartBunnies
 {
     public static bool IsRunning = false;
 
+    internal static string ActionLabel => IsRunning ? "Stop" : $"Start {C.zoneSelected switch { 0 => "Pagos", 1 => "Pyros", 2 => "Hydatos", _ => "Normal Raid" }}";
+    internal static string ActionTitleTooltip => UiText.T(ActionLabel) + "\n" + UiText.T(
+        !IsRunning && !P.pluginDependencies.RequiredDependenciesLoaded
+            ? "Load all required plugins to start Bunnies automation."
+            : icurrentTask == "idle" ? "Idle. Select an area and press Start to begin." : icurrentTask);
+
+    internal static void RunActionFromUi()
+    {
+        if (IsRunning)
+        {
+            SchedulerMain.DisablePlugin();
+            RunCommand("e [Bunnies] Bunnies Stopped.");
+        }
+        else if (P.pluginDependencies.RequiredDependenciesLoaded)
+        {
+            ToggleRotationAIOff();
+            SchedulerMain.EnablePlugin();
+        }
+    }
+
     public static void Draw()
     {
         var s = MaterialTheme.Metrics.Scale;
@@ -45,21 +65,9 @@ internal class StartBunnies
         ImGui.SetCursorScreenPos(new Vector2(origin.X + (BfePresentation.Compact ? 9 : 5) * s, ImGui.GetCursorScreenPos().Y + 14 * s));
         using var actionFont = UiText.Font(UiFontRole.Action);
         var ready = P.pluginDependencies.RequiredDependenciesLoaded;
-        var area = C.zoneSelected switch { 0 => "Pagos", 1 => "Pyros", 2 => "Hydatos", _ => "Normal Raid" };
-        var original = IsRunning ? "Stop" : $"Start {area}";
+        var original = ActionLabel;
         if (UiGui.FilledAction(original, IsRunning ? MaterialIcon.Stop : MaterialIcon.Play, !ready && !IsRunning))
-        {
-            if (!IsRunning)
-            {
-                ToggleRotationAIOff();
-                SchedulerMain.EnablePlugin();
-            }
-            else
-            {
-                SchedulerMain.DisablePlugin();
-                RunCommand("e [Bunnies] Bunnies Stopped.");
-            }
-        }
+            RunActionFromUi();
         if (!ready && ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) MaterialText.SetTooltip(UiText.T("Load all required plugins to start Bunnies automation."));
     }
 

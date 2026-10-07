@@ -31,10 +31,22 @@ internal class MainWindow : PositionedWindow
             IconOffset = new(2,2),
             ShowTooltip = () => MaterialText.SetTooltip(UiText.T("Open settings window"))
         });
+        TitleBarButtons.Add(new()
+        {
+            Icon = FontAwesomeIcon.Play, Priority = -10, IconOffset = new(2, 1),
+            Click = button => { if (button == ImGuiMouseButton.Left) StartBunnies.RunActionFromUi(); },
+            ShowTooltip = () => MaterialText.SetTooltip(StartBunnies.ActionTitleTooltip),
+        });
 
         P.windowSystem.AddWindow(this);
     }
     public void Dispose() {}
+    public override void PreDraw()
+    {
+        TitleBarButtons[1].Icon = StartBunnies.IsRunning ? FontAwesomeIcon.Stop : FontAwesomeIcon.Play;
+        UiGui.ReserveTitleSpace(this, WindowName.Split("##", 2)[0], 720);
+        base.PreDraw();
+    }
     private void DrawStatsTab()
     {
         bool statsOpen;
