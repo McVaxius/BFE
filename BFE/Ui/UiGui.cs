@@ -348,6 +348,19 @@ internal static class UiGui
         }
         ImGui.PopID(); return changed;
     }
+    internal static void PaintTitleWithImage(Window owner, string display)
+    {
+        var window = ImGuiP.FindWindowByName(owner.WindowName);
+        if (window.IsNull) return;
+        var count = owner.TitleBarButtons.Count(button => !owner.IsClickthrough || button.AvailableClickthrough);
+        if (owner.AllowPinning || owner.AllowClickthrough || owner.AllowBackgroundBlur) count++;
+        var extraRightWidth = count * (ImGuiP.CalcFontSize(window) + ImGui.GetStyle().ItemInnerSpacing.X);
+        var texture = BfePresentation.OriginalIcon;
+        using var font = UiText.Font(UiFontRole.Body);
+        MaterialWindowHeader.PaintTitle(window, display, texture?.Handle ?? default,
+            texture is null ? Vector2.Zero : new Vector2(texture.Width, texture.Height), extraRightWidth, owner.ShowCloseButton);
+    }
+
     internal static void ReserveTitleSpace(Window owner, string visible, float minimumWidth)
     {
         var style = ImGui.GetStyle();
@@ -357,7 +370,8 @@ internal static class UiGui
         var count = owner.TitleBarButtons.Count(button => !owner.IsClickthrough || button.AvailableClickthrough);
         if (owner.AllowPinning || owner.AllowClickthrough || owner.AllowBackgroundBlur) count++;
         var controls = (count + (owner.ShowCloseButton ? 1 : 0) + (collapse ? 1 : 0)) * (fontSize + style.ItemInnerSpacing.X);
-        var required = (MaterialText.Measure(visible).X + controls + style.FramePadding.X * 2 + style.ItemInnerSpacing.X)
+        var required = (MaterialText.Measure(visible).X + fontSize + style.ItemInnerSpacing.X
+            + controls + style.FramePadding.X * 2 + style.ItemInnerSpacing.X)
             / ImGui.GetIO().FontGlobalScale;
         var bounds = owner.SizeConstraints ?? new WindowSizeConstraints();
         bounds.MinimumSize = new(Math.Max(minimumWidth, required), bounds.MinimumSize.Y);

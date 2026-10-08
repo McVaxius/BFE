@@ -8,6 +8,17 @@ internal enum UiFontRole { Body, BodyStrong, Title, PluginName, Counter, Action,
 
 internal static class BfePresentation
 {
+    // Dalamud owns the shared texture through render submission; callers borrow its wrapper.
+    internal static Dalamud.Interface.Textures.TextureWraps.IDalamudTextureWrap? OriginalIcon
+        => Plugin.P.TextureProvider.GetFromManifestResource(typeof(Plugin).Assembly, "BFE.images.icon.png").GetWrapOrDefault();
+
+    internal static void DrawPluginIcon(ImDrawListPtr drawList, Vector2 min, Vector2 max)
+    {
+        var texture = OriginalIcon;
+        if (texture is not null)
+            MaterialCanvas.DrawImage(drawList, texture.Handle, new Vector2(texture.Width, texture.Height), min, max);
+    }
+
     internal const uint ReferenceAccent = 0xFFD05A;
     internal static readonly float[] FontSizes = [20, 20, 56, 22, 22, 20, 44];
     internal static readonly string[] FontFiles = ["segoeui.ttf", "seguisb.ttf", "segoeuib.ttf", "seguisb.ttf", "seguisb.ttf", "seguisb.ttf", "segoeuib.ttf"];
@@ -86,29 +97,7 @@ internal static class BfePresentation
 
     internal static void Rabbit(Vector2 origin, float size)
     {
-        var dl = ImGui.GetWindowDrawList();
-        var ink = MaterialCanvas.Color(MaterialTheme.Current.Colors.Primary);
-        var horizontalScale = Compact ? .95f : .88f;
-        void Ellipse(float x, float y, float rx, float ry, float angle = 0)
-        {
-            for (var i = 0; i < 32; i++)
-            {
-                var t = i * MathF.Tau / 32;
-                var px = MathF.Cos(t) * rx;
-                var py = MathF.Sin(t) * ry;
-                dl.PathLineTo(origin + new Vector2((x + px * MathF.Cos(angle) - py * MathF.Sin(angle)) * horizontalScale, y + px * MathF.Sin(angle) + py * MathF.Cos(angle)) * size);
-            }
-            dl.PathFillConvex(ink);
-        }
-        Ellipse(.59f, .23f, .07f, .24f, -.08f);
-        Ellipse(.43f, .25f, .065f, .19f, -.45f);
-        Ellipse(.59f, .48f, .18f, .17f);
-        Ellipse(.38f, .75f, .23f, .23f, .25f);
-        Ellipse(.52f, .75f, .11f, .21f, -.12f);
-        Ellipse(.17f, .78f, .08f, .08f);
-        Ellipse(.30f, .95f, .22f, .035f);
-        Ellipse(.61f, .94f, .08f, .035f);
-        dl.AddCircleFilled(origin + new Vector2(.65f * horizontalScale, .44f) * size, .025f * size, MaterialCanvas.Color(MaterialTheme.Current.Colors.Background), 12);
+        DrawPluginIcon(ImGui.GetWindowDrawList(), origin, origin + new Vector2(size));
     }
 
     internal static void Discord(Vector2 origin, float size, Vector4 color)

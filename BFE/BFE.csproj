@@ -7,9 +7,9 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
-    <Version>1.0.0.3</Version>
-    <FileVersion>1.0.0.3</FileVersion>
-    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <Version>1.0.0.4</Version>
+    <FileVersion>1.0.0.4</FileVersion>
+    <AssemblyVersion>1.0.0.4</AssemblyVersion>
     <NoWarn>CS0219;CS0414;CS0618;CS0649;CS8632</NoWarn>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <IsPackable>false</IsPackable>
@@ -29,6 +29,7 @@
   <ItemGroup>
     <None Include="BFE.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="images\icon.png" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="images\icon.png" LogicalName="BFE.images.icon.png" />
     <None Include="Resources\Images\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

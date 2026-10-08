@@ -1,10 +1,16 @@
 # BFE
 
-The main window follows the approved BFE regular and compact mockups: rabbit
+Hindi uses installed shaping fonts. The source now leaves other languages usable when the Hindi menu caption is unavailable, showing a disabled ASCII `Hindi (unavailable)` option. Required text for a selected Hindi UI still requires full validation; on failure, the readable status offers **Use English**, saving English only after an explicit press. Native verification and Linux/Wine acceptance remain pending for this change.
+
+The main window follows the approved BFE regular and compact mockups: packaged icon
 branding, area cards, current task, elapsed time, actual dependency status and a
 reserved Start/Stop footer. Pagos and Hydatos selection remains disabled; existing
 saved selections and scheduler actions are retained. Settings, About, statistics
 and Debug retain their layouts with shared appearance and translated labels.
+
+Use Settings for shared colour, language, compact spacing and window transparency/fade; optional Main controls change the same saved preferences. The packaged BFE icon appears in Main branding and its expanded/collapsed title. Eureka task settings stay in Settings, with the existing Main Start/Stop action controlling automation.
+
+The original-icon/title integration compiles through the unchanged build route; native consumer image/title/control checks and game acceptance remain pending.
 
 The Settings Window appearance section owns colour, language and compact controls
 through the existing configuration save path. Main retains a Transparency toggle
@@ -44,8 +50,8 @@ intact.
 Hydatos statistics use their own zone heading. Debug allows horizontal scrolling
 so translated controls remain reachable at its narrow minimum width.
 The main header keeps its regular/compact language control,
-the reference-sized action icons, a native compact checkbox and the rabbit's
-regular/compact proportions.
+the reference-sized action icons, a native compact checkbox and the packaged
+icon's original proportions.
 Area cards retain disabled native selection while keeping their captions readable;
 the map-pin heading, outlined support heart, card gaps and elapsed-time type use
 the approved presentation without changing selections or Start/Stop behavior.

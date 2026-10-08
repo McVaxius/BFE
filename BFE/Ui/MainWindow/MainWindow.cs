@@ -47,6 +47,12 @@ internal class MainWindow : PositionedWindow
         UiGui.ReserveTitleSpace(this, WindowName.Split("##", 2)[0], 720);
         base.PreDraw();
     }
+    public override void PostDraw()
+    {
+        base.PostDraw();
+        UiGui.PaintTitleWithImage(this, WindowName.Split("##", 2)[0]);
+    }
+
     private void DrawStatsTab()
     {
         bool statsOpen;
