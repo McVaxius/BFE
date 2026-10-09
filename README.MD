@@ -12,7 +12,7 @@ Use Settings for shared colour, language, compact spacing and window transparenc
 
 The original-icon/title integration compiles through the unchanged build route; native consumer image/title/control checks and game acceptance remain pending.
 
-The Settings Window appearance section owns colour, language and compact controls
+The Settings **Window appearance** tab owns colour, language and compact controls
 through the existing configuration save path. Main retains a Transparency toggle
 and optional language/`C` controls; both visibility preferences default on. English, German, French, Spanish, Italian, Russian,
 Japanese, Korean, Simplified Chinese, Vietnamese, Brazilian Portuguese,

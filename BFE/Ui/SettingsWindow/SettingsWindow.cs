@@ -26,15 +26,21 @@ internal class SettingsWindow : PositionedWindow
     {
         WindowMotion.DrawChrome();
         UiGui.Title($"{PluginInfo.DisplayName} Settings", UiText.T("BFE Settings"));
-        P.appearance.DrawWindowAppearanceSettings();
-        ImGui.Separator();
+        var appearanceRoot = ImGui.GetID("");
         bool tabsOpen;
-        using (MaterialText.PushLineHeight(UiText.T("General Settings"), UiText.T("AutoRetainer Settings")))
-            tabsOpen = ImGui.BeginTabBar("Bunnies Settings Tabs");
+        using (MaterialText.PushLineHeight(UiText.T("General Settings"), UiText.T("AutoRetainer Settings"), UiText.T("Window appearance")))
+            tabsOpen = ImGui.BeginTabBar("Bunnies Settings Tabs", ImGuiTabBarFlags.FittingPolicyScroll);
         if (tabsOpen)
         {
             if (UiGui.TabItem("General Settings")) { GeneralSettings.Draw(); ImGui.EndTabItem(); }
             if (UiGui.TabItem("AutoRetainer Settings")) { AutoReatinerSettings.Draw(); ImGui.EndTabItem(); }
+            using (var appearance = MaterialTabs.Item(UiText.T("Window appearance") + "###WindowAppearance", ImGuiTabItemFlags.NoPushId))
+                if (appearance.Visible)
+                {
+                    ImGuiP.PushOverrideID(appearanceRoot);
+                    try { P.appearance.DrawWindowAppearanceSettings(); }
+                    finally { ImGui.PopID(); }
+                }
             ImGui.EndTabBar();
         }
         FinalizePendingWindowPlacement();
