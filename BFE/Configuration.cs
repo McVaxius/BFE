@@ -11,9 +11,22 @@ public class Config : IEzConfig
     public int version = CURRENT_VERSION;
     public string UiLanguage { get; set; } = "en";
     public uint UiAccentRgb { get; set; } = 0xFFD05A;
-    public bool UiCompact { get; set; } = false;
-    public bool UiCompactVisibleOnMainWindow { get; set; } = true;
+    public bool UiCompact { get; set; } = true;
+    public bool UiCompactVisibleOnMainWindow { get; set; }
+    public bool UiTransparencyVisibleOnMainWindow { get; set; }
+    public bool UiCompactDefaultsApplied { get; set; }
     public bool UiLanguageVisibleOnMainWindow { get; set; } = true;
+    [Newtonsoft.Json.JsonExtensionData]
+    public Dictionary<string, Newtonsoft.Json.Linq.JToken> AdditionalSettings { get; set; } = new();
+
+    internal bool ApplyCompactDefaults()
+    {
+        if (UiCompactDefaultsApplied) return false;
+        UiCompact = true;
+        UiCompactVisibleOnMainWindow = UiTransparencyVisibleOnMainWindow = false;
+        UiCompactDefaultsApplied = true;
+        return true;
+    }
     public bool UiTransparencyEnabled { get; set; } = true;
     private int uiWindowOpacityPercent = 100;
     public int UiWindowOpacityPercent { get => uiWindowOpacityPercent; set => uiWindowOpacityPercent = System.Math.Clamp(value, 10, 100); }

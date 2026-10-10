@@ -178,6 +178,9 @@ internal sealed class BfeAppearance : IDisposable
         var compactVisible = C.UiCompactVisibleOnMainWindow;
         if (UiGui.Checkbox("Compact visible on main window", ref compactVisible))
         { C.UiCompactVisibleOnMainWindow = compactVisible; C.Save(); }
+        var transparencyVisible = C.UiTransparencyVisibleOnMainWindow;
+        if (UiGui.Checkbox("Transparency visible on main window", ref transparencyVisible))
+        { C.UiTransparencyVisibleOnMainWindow = transparencyVisible; C.Save(); }
         var languageVisible = C.UiLanguageVisibleOnMainWindow;
         if (UiGui.Checkbox("Language visible on main window", ref languageVisible))
         { C.UiLanguageVisibleOnMainWindow = languageVisible; C.Save(); }

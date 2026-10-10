@@ -73,6 +73,7 @@ public sealed class Plugin : IDalamudPlugin
     {
         EzConfig.Migrate<Config>();
         config = EzConfig.Init<Config>();
+        if (config.ApplyCompactDefaults()) config.Save();
         appearance = new(TextureProvider);
 
         // IPC's

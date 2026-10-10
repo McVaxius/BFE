@@ -1,5 +1,7 @@
 # BFE
 
+The first load of the I521 update applies Compact mode once and hides Main's Compact and Transparency controls. Settings > Window appearance retains density, transparency and independent main-control visibility choices; subsequent loads preserve those choices and unknown saved settings through BFE's existing EzConfig storage.
+
 
 Compact dependency rows use the approved adjacent-row table style with narrow column insets. Status icons and repository actions retain their readable sizes.
 
