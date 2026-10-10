@@ -1,5 +1,6 @@
 # BFE
 
+
 Compact dependency rows use the approved adjacent-row table style with narrow column insets. Status icons and repository actions retain their readable sizes.
 
 Hindi uses installed shaping fonts. The source now leaves other languages usable when the Hindi menu caption is unavailable, showing a disabled ASCII `Hindi (unavailable)` option. Required text for a selected Hindi UI still requires full validation; on failure, the readable status offers **Use English**, saving English only after an explicit press. Native verification and Linux/Wine acceptance remain pending for this change.
