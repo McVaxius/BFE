@@ -173,6 +173,7 @@ internal class StartBunnies
         var s = MaterialTheme.Metrics.Scale;
         using var rowsStyle = new MaterialStyleScope();
         if (!BfePresentation.Compact) rowsStyle.Style(ImGuiStyleVar.CellPadding, new Vector2(ImGui.GetStyle().CellPadding.X, 6 * s));
+        using var tightRows = BfePresentation.Compact ? MaterialTable.PushTightRows() : default;
         var headingCenter = (ImGui.GetItemRectMin().Y + ImGui.GetItemRectMax().Y) * .5f;
         var right = ImGui.GetCursorScreenPos().X + ImGui.GetContentRegionAvail().X;
         var refreshWidth = UiGui.IconButtonWidth("Refresh");

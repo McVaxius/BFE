@@ -9,6 +9,7 @@ namespace BFE.Ui.SettingWindow;
 
 internal class SettingsWindow : PositionedWindow
 {
+    private readonly AethertekUI.Dalamud.MaterialSupportLog supportLog = new();
     public SettingsWindow(): base($"{PluginInfo.DisplayName} Settings ###BFESettingsWindow")
     {
         Flags |= ImGuiWindowFlags.HorizontalScrollbar;
@@ -32,7 +33,14 @@ internal class SettingsWindow : PositionedWindow
             tabsOpen = ImGui.BeginTabBar("Bunnies Settings Tabs", ImGuiTabBarFlags.FittingPolicyScroll);
         if (tabsOpen)
         {
-            if (UiGui.TabItem("General Settings")) { GeneralSettings.Draw(); ImGui.EndTabItem(); }
+            if (UiGui.TabItem("General Settings"))
+            {
+                GeneralSettings.Draw();
+                supportLog.Draw(ECommons.DalamudServices.Svc.PluginInterface, key => UiText.T(key),
+                    path => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = path, UseShellExecute = true }),
+                    ex => ECommons.DalamudServices.Svc.Log.Error(ex, "Dalamud log export failed."), ECommons.DalamudServices.Svc.Commands);
+                ImGui.EndTabItem();
+            }
             if (UiGui.TabItem("AutoRetainer Settings")) { AutoReatinerSettings.Draw(); ImGui.EndTabItem(); }
             using (var appearance = MaterialTabs.Item(UiText.T("Window appearance") + "###WindowAppearance", ImGuiTabItemFlags.NoPushId))
                 if (appearance.Visible)

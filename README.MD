@@ -1,5 +1,7 @@
 # BFE
 
+Compact dependency rows use the approved adjacent-row table style with narrow column insets. Status icons and repository actions retain their readable sizes.
+
 Hindi uses installed shaping fonts. The source now leaves other languages usable when the Hindi menu caption is unavailable, showing a disabled ASCII `Hindi (unavailable)` option. Required text for a selected Hindi UI still requires full validation; on failure, the readable status offers **Use English**, saving English only after an explicit press. Native verification and Linux/Wine acceptance remain pending for this change.
 
 The main window follows the approved BFE regular and compact mockups: packaged icon
@@ -114,3 +116,9 @@ forked and updated with permission from:
 https://github.com/Joshua-XIV/Bunnies
 
 Bunny Farm Eureka will be updated to include all 3 zones with bunnies probably by end of april / early-may
+
+## Support logs
+
+Use **Copy / ZIP Dalamud log** in Settings > General Settings to create a local ZIP and open its folder. At 100 MiB or above, the first click warns that logging may have stopped and recent activity may be missing; click **Export capped log anyway** only if you still want that snapshot. Share the ZIP manually and remove exports when no longer needed. **Open Export Folder** reopens the completed export’s folder.
+
+When XA Slave is loaded, **Open XA Slave log tools** opens its **Utility > XA Mods** panel, which contains Dalamud Log Cleaner. The existing **Copy / ZIP Dalamud log** action remains separate. Opening the panel does not run cleanup or change XA Slave settings.
