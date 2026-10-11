@@ -26,7 +26,7 @@ internal class SettingsWindow : PositionedWindow
     public override void Draw()
     {
         WindowMotion.DrawChrome();
-        UiGui.Title($"{PluginInfo.DisplayName} Settings", UiText.T("BFE Settings"));
+        UiGui.TitleWithButtons($"{PluginInfo.DisplayName} Settings", UiText.T("BFE Settings"), this);
         var appearanceRoot = ImGui.GetID("");
         bool tabsOpen;
         using (MaterialText.PushLineHeight(UiText.T("General Settings"), UiText.T("AutoRetainer Settings"), UiText.T("Window appearance")))

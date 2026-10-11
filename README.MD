@@ -13,13 +13,14 @@ reserved Start/Stop footer. Pagos and Hydatos selection remains disabled; existi
 saved selections and scheduler actions are retained. Settings, About, statistics
 and Debug retain their layouts with shared appearance and translated labels.
 
-Use Settings for shared colour, language, compact spacing and window transparency/fade; optional Main controls change the same saved preferences. The packaged BFE icon appears in Main branding and its expanded/collapsed title. Eureka task settings stay in Settings, with the existing Main Start/Stop action controlling automation.
+Use Settings for shared colour, language, compact spacing and window transparency/fade; titlebar appearance actions change the same saved preferences. The packaged BFE icon appears in Main branding and its expanded/collapsed title. Eureka task settings stay in Settings, with the existing Main Start/Stop action controlling automation.
 
 The original-icon/title integration compiles through the unchanged build route; native consumer image/title/control checks and game acceptance remain pending.
 
 The Settings **Window appearance** tab owns colour, language and compact controls
-through the existing configuration save path. Main retains a Transparency toggle
-and optional language/`C` controls; both visibility preferences default on. English, German, French, Spanish, Italian, Russian,
+through the existing configuration save path. Native titlebars expose language,
+compact spacing, transparency and colour shortcuts, including while collapsed.
+Main retains its saved icon-visibility choices. English, German, French, Spanish, Italian, Russian,
 Japanese, Korean, Simplified Chinese, Vietnamese, Brazilian Portuguese,
 Indonesian, Polish, Turkish and Hindi are embedded resources. Segoe UI fonts
 use Dalamud-managed CJK coverage; font failures are shown explicitly. Theme
@@ -54,9 +55,9 @@ intact.
 
 Hydatos statistics use their own zone heading. Debug allows horizontal scrolling
 so translated controls remain reachable at its narrow minimum width.
-The main header keeps its regular/compact language control,
-the reference-sized action icons, a native compact checkbox and the packaged
-icon's original proportions.
+The main header keeps the reference-sized action icons and the packaged
+icon's original proportions. Appearance shortcuts use the native titlebar
+and retain the existing saved settings.
 Area cards retain disabled native selection while keeping their captions readable;
 the map-pin heading, outlined support heart, card gaps and elapsed-time type use
 the approved presentation without changing selections or Start/Stop behavior.

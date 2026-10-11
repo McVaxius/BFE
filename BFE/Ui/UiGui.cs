@@ -379,6 +379,9 @@ internal static class UiGui
     }
 
     internal static void Title(string original,string translated)
+        => TitleWithButtons(original, translated, null);
+
+    internal static void TitleWithButtons(string original, string translated, Window? owner)
     {
         var s=ImGui.GetStyle(); var size=ImGui.GetFontSize();var height=ImGui.GetFrameHeight();
         var flags=ImGuiP.GetCurrentWindow().Flags;
@@ -391,6 +394,13 @@ internal static class UiGui
             position.Y = ImGui.GetWindowPos().Y + Math.Max(0, (height - MaterialText.Measure(translated).Y * size / ImGui.GetFontSize()) * .5f);
         var dl=ImGui.GetWindowDrawList();
         var rightButtons = size + s.FramePadding.X * 2;
+        if (owner is not null)
+        {
+            if (!owner.ShowCloseButton) rightButtons -= size;
+            var count = owner.TitleBarButtons.Count(button => !owner.IsClickthrough || button.AvailableClickthrough);
+            if (owner.AllowPinning || owner.AllowClickthrough || owner.AllowBackgroundBlur) count++;
+            rightButtons += count * (size + s.ItemInnerSpacing.X);
+        }
         if ((flags & ImGuiWindowFlags.NoCollapse) == 0 && s.WindowMenuButtonPosition == ImGuiDir.Right) rightButtons += size + s.ItemInnerSpacing.X;
         dl.PushClipRect(position,ImGui.GetWindowPos()+new Vector2(Math.Max(0,ImGui.GetWindowSize().X-rightButtons),height),false);
         try

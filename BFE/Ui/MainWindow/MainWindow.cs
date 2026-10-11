@@ -355,48 +355,11 @@ internal class MainWindow : PositionedWindow
         var titleRight = ImGui.GetItemRectMax().X;
         ImGui.SetCursorScreenPos(origin + new Vector2(titleX, (compact ? 41 : 56) * s));
         UiGui.TextUnformatted("Bunny Fate Engine");
-        var selectorWidth = C.UiLanguageVisibleOnMainWindow ? P.appearance.SelectorWidth : 0;
-        var compactWidth = C.UiCompactVisibleOnMainWindow
-            ? ImGui.GetTextLineHeight() + ImGui.GetStyle().ItemInnerSpacing.X + MaterialText.Measure("C").X + ImGui.GetStyle().ItemSpacing.X : 0;
-        var opacityWidth = C.UiTransparencyVisibleOnMainWindow
-            ? ImGui.GetTextLineHeight() + ImGui.GetStyle().ItemInnerSpacing.X + MaterialText.Measure(UiText.T("Transparency")).X : 0;
         var controlsWidth = new[] { "Settings", "Ko-fi", "Discord", "OG Author" }.Sum(label => UiGui.IconButtonWidth(label, header: true))
-            + compactWidth + opacityWidth + selectorWidth + ImGui.GetStyle().ItemSpacing.X * (C.UiLanguageVisibleOnMainWindow ? 5 : 4);
+            + ImGui.GetStyle().ItemSpacing.X * 3;
         var headingRight = Math.Max(titleRight, ImGui.GetItemRectMax().X);
         var wrapped = headingRight + 20 * s + controlsWidth > origin.X + width;
         ImGui.SetCursorScreenPos(origin + new Vector2(wrapped ? 0 : width - controlsWidth, (wrapped ? BfePresentation.HeaderHeight : compact ? 23 : 30) * s));
-        var controlsOrigin = ImGui.GetCursorScreenPos();
-        var controlsHeight = (compact ? 44 : 52) * s;
-        if (C.UiCompactVisibleOnMainWindow)
-        {
-            var compactPreference = C.UiCompact;
-            ImGui.BeginGroup();
-            ImGui.SetCursorScreenPos(controlsOrigin + new Vector2(0, (controlsHeight - ImGui.GetTextLineHeight()) * .5f));
-            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(ImGui.GetStyle().FramePadding.X, 0));
-            if (UiGui.Checkbox("C##CompactMode", ref compactPreference)) { C.UiCompact = compactPreference; C.Save(); }
-            ImGui.PopStyleVar();
-            if (ImGui.IsItemHovered()) MaterialText.SetTooltip(UiText.T("Compact mode"));
-            var measuredCompactWidth = ImGui.GetItemRectSize().X;
-            ImGui.SetCursorScreenPos(controlsOrigin);
-            ImGui.Dummy(new Vector2(measuredCompactWidth, controlsHeight));
-            ImGui.EndGroup();
-        }
-        if (C.UiTransparencyVisibleOnMainWindow)
-        {
-            if (C.UiCompactVisibleOnMainWindow && ImGui.GetItemRectMax().X + ImGui.GetStyle().ItemSpacing.X + opacityWidth <= origin.X + width) ImGui.SameLine();
-            var opacityOrigin = ImGui.GetCursorScreenPos();
-            ImGui.BeginGroup();
-            ImGui.SetCursorScreenPos(opacityOrigin + new Vector2(0, (controlsHeight - ImGui.GetTextLineHeight()) * .5f));
-            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(ImGui.GetStyle().FramePadding.X, 0));
-            P.appearance.DrawTransparencyToggle();
-            ImGui.PopStyleVar();
-            var measuredOpacityWidth = ImGui.GetItemRectSize().X;
-            ImGui.SetCursorScreenPos(opacityOrigin);
-            ImGui.Dummy(new Vector2(measuredOpacityWidth, controlsHeight));
-            ImGui.EndGroup();
-        }
-        if (C.UiCompactVisibleOnMainWindow || C.UiTransparencyVisibleOnMainWindow)
-            UiGui.SameLineIconIfFits("Settings", header: true);
         if (UiGui.IconButton("Settings", MaterialIcon.Settings, true))
             P.settingsWindow.IsOpen = !P.settingsWindow.IsOpen;
         UiGui.SameLineIconIfFits("Ko-fi", header: true);
@@ -410,11 +373,6 @@ internal class MainWindow : PositionedWindow
         UiGui.SameLineIconIfFits("OG Author", header: true);
         if (UiGui.IconButton("OG Author", MaterialIcon.Person, true))
             Process.Start(new ProcessStartInfo { FileName = PluginInfo.OriginalAuthorUrl, UseShellExecute = true });
-        if (C.UiLanguageVisibleOnMainWindow)
-        {
-            if (ImGui.GetItemRectMax().X + ImGui.GetStyle().ItemSpacing.X + selectorWidth <= origin.X + width) ImGui.SameLine();
-            P.appearance.DrawSelector(false);
-        }
         var controlsBottom = ImGui.GetItemRectMax().Y;
         ImGui.SetCursorScreenPos(origin);
         ImGui.Dummy(new Vector2(width, Math.Max(BfePresentation.HeaderHeight * s, controlsBottom - origin.Y + 10 * s)));

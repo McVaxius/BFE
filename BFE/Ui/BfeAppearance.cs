@@ -14,6 +14,7 @@ internal sealed class BfeAppearance : IDisposable
     private UiText text;
     private BfeFonts fonts;
     private MaterialTheme theme;
+    private readonly Dictionary<Dalamud.Interface.Windowing.Window, AethertekUI.Dalamud.MaterialAppearanceTitleBar> appearanceTitleBars = new();
     private readonly MaterialWindowFold fontStatusMotion = new();
     private readonly MaterialWindowDecorations fontStatusDecorations = new();
     private readonly Dictionary<string, MaterialWindowOpacity> windowOpacities = new();
@@ -111,7 +112,9 @@ internal sealed class BfeAppearance : IDisposable
         style.Style(ImGuiStyleVar.FrameRounding, 4 * s);
         style.Style(ImGuiStyleVar.ChildRounding, 4 * s);
         using var body = fonts.Push(UiFontRole.Body);
+        PrepareAppearanceTitleBars(windows);
         windows.Draw();
+        foreach (var titlebar in appearanceTitleBars.Values) titlebar.DrawPopups();
         foreach (var window in windows.Windows)
             if (window.IsOpen) ApplyWindowOpacity(window.WindowName);
     }
@@ -184,6 +187,40 @@ internal sealed class BfeAppearance : IDisposable
         var languageVisible = C.UiLanguageVisibleOnMainWindow;
         if (UiGui.Checkbox("Language visible on main window", ref languageVisible))
         { C.UiLanguageVisibleOnMainWindow = languageVisible; C.Save(); }
+        DrawTransparencySettings();
+    }
+
+    private void PrepareAppearanceTitleBars(Dalamud.Interface.Windowing.WindowSystem windows)
+    {
+        foreach (var window in windows.Windows.OfType<Dalamud.Interface.Windowing.Window>())
+        {
+            if ((window.Flags & ImGuiWindowFlags.NoTitleBar) != 0) continue;
+            if (!appearanceTitleBars.ContainsKey(window))
+                appearanceTitleBars.Add(window, AethertekUI.Dalamud.MaterialAppearanceTitleBar.Register(window,
+                    () => new(UiText.T("Language"), UiText.T("Compact mode"), UiText.T("Transparency"), UiText.T("Color")),
+                    () => DrawSelector(false),
+                    () => { C.UiCompact = !C.UiCompact; C.Save(); },
+                    DrawTransparencySettings, DrawTitleBarColour,
+                    () => window is global::BFE.Ui.MainWindow.MainWindow
+                        ? new(C.UiLanguageVisibleOnMainWindow, C.UiCompactVisibleOnMainWindow,
+                            C.UiTransparencyVisibleOnMainWindow, true)
+                        : new(true, true, true, true)));
+            appearanceTitleBars[window].RefreshVisibility();
+        }
+    }
+
+    private void DrawTitleBarColour()
+    {
+        if (!MaterialAppearanceSelector.DrawPalette("appearance", ref accentDraft,
+                new(UiText.T("Color"), UiText.T("Language"), UiText.T("Teal"), UiText.T("Blue"), UiText.T("Pink"), UiText.T("Custom RGB")))) return;
+        C.UiAccentRgb = ((uint)Math.Clamp((int)MathF.Round(accentDraft.X * 255), 0, 255) << 16)
+            | ((uint)Math.Clamp((int)MathF.Round(accentDraft.Y * 255), 0, 255) << 8)
+            | (uint)Math.Clamp((int)MathF.Round(accentDraft.Z * 255), 0, 255);
+        C.Save();
+    }
+
+    private void DrawTransparencySettings()
+    {
         var enabled = C.UiTransparencyEnabled;
         if (UiGui.Checkbox("Transparency", ref enabled))
         { C.UiTransparencyEnabled = enabled; C.Save(); }

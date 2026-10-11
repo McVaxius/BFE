@@ -45,7 +45,7 @@ internal class DebugWindow : PositionedWindow
     public override void Draw()
     {
         WindowMotion.DrawChrome();
-        UiGui.Title($"{PluginInfo.DisplayName} Debug", UiText.T("BFE Debug"));
+        UiGui.TitleWithButtons($"{PluginInfo.DisplayName} Debug", UiText.T("BFE Debug"), this);
         bool debug = C.enableDebug;
         if (UiGui.Checkbox("Debug Stats", ref debug))
         {
